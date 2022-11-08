@@ -21,7 +21,7 @@ smtp_server = '<SMTP SERVER>'
 
 def get_fsxinfo_dict(profile='default'): # Use Python subprocess to have the AWS CLI pull all FSx filesystems into a JSON formatted variable
     
-    fsxinfo = subprocess.run(["aws", "fsx", "describe-file-systems", "--output", "json", "--profile", profile], stdout=subprocess.PIPE)
+    fsxinfo = subprocess.run(["/usr/local/bin/aws", "fsx", "describe-file-systems", "--output", "json", "--profile", profile], stdout=subprocess.PIPE)
     fsxinfo_utf8 = fsxinfo.stdout.decode('utf-8')
     fsxinfo_utf8_json = json.loads(fsxinfo_utf8)
     return fsxinfo_utf8_json
@@ -37,7 +37,7 @@ def backup_fsx(list, profile='default'): # Use Python subprocess to have the AWS
     
     results_dict = {}
     for i in list:
-        proc = subprocess.Popen(["aws", "fsx", "create-backup", "--file-system-id", i, "--profile", profile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(["/usr/local/bin/aws", "fsx", "create-backup", "--file-system-id", i, "--profile", profile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()
         if stdout.hex(): # If standard output contains data, backup was successful and should be included in dict; if empty, then standard error should be included 
             results_dict[i] = stdout.decode().strip()
